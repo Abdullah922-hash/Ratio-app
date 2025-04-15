@@ -1,8 +1,6 @@
 import streamlit as st
 import pandas as pd
 
-print("Stock Ration App")
-
 # --------- File Processing Helper ---------
 def process_files(uploaded_files):
     data = {}
@@ -148,6 +146,23 @@ elif page == "See Report":
                     return "OverStocked"
 
             grouped["Status"] = grouped["Stock Months"].apply(get_status)
+
+            # 🔢 Inventory Status Summary (Before adding total row)
+            filtered_status_df = grouped[
+                (pd.to_numeric(grouped["BeforeSell SOH"], errors='coerce') >= 50)
+            ]
+
+            status_counts = filtered_status_df["Status"].value_counts().to_dict()
+
+            danger_count = status_counts.get("Danger", 0)
+            safe_count = status_counts.get("Safe", 0)
+            overstocked_count = status_counts.get("OverStocked", 0)
+
+            st.markdown("### 📊 Inventory Status Summary (Min. 200 BeforeSell SOH)")
+            col1, col2, col3 = st.columns(3)
+            col1.metric("🔴 Danger", danger_count)
+            col2.metric("🟡 Safe", safe_count)
+            col3.metric("🟢 OverStocked", overstocked_count)
 
             # ➕ Total Row with New Metrics
             total_row = {col: 'Total' if i == 0 else '' for i, col in enumerate(group_cols)}

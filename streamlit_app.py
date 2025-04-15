@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 
+print("Stock Ration App")
+
 # --------- File Processing Helper ---------
 def process_files(uploaded_files):
     data = {}

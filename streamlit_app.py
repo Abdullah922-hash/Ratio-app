@@ -158,7 +158,7 @@ elif page == "See Report":
             safe_count = status_counts.get("Safe", 0)
             overstocked_count = status_counts.get("OverStocked", 0)
 
-            st.markdown("### 📊 Inventory Status Summary (Min. 200 BeforeSell SOH)")
+            st.markdown("### 📊 Inventory Status Summary (Min. 50 BeforeSell SOH)")
             col1, col2, col3 = st.columns(3)
             col1.metric("🔴 Danger", danger_count)
             col2.metric("🟡 Safe", safe_count)

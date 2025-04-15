@@ -109,20 +109,15 @@ elif page == "See Report":
             total_net_sales = grouped["SALES QTY"].sum()
             total_SOH = grouped["SOH"].sum()
 
-            if total_before_sell != 0:
-                grouped["% of BeforeSell"] = (grouped["BeforeSell SOH"] / total_before_sell * 100).round(2)
-            else:
-                grouped["% of BeforeSell"] = 0.00
-
-            if total_net_sales != 0:
-                grouped["% of SALES QTY"] = (grouped["SALES QTY"] / total_net_sales * 100).round(2)
-            else:
-                grouped["% of SALES QTY"] = 0.00
-
-            if total_SOH != 0:
-                grouped["% of SOH"] = (grouped["SOH"] / total_SOH * 100).round(2)
-            else:
-                grouped["% of SOH"] = 0.00
+            grouped["% of BeforeSell"] = (
+                (grouped["BeforeSell SOH"] / total_before_sell * 100).round(2) if total_before_sell else 0.00
+            )
+            grouped["% of SALES QTY"] = (
+                (grouped["SALES QTY"] / total_net_sales * 100).round(2) if total_net_sales else 0.00
+            )
+            grouped["% of SOH"] = (
+                (grouped["SOH"] / total_SOH * 100).round(2) if total_SOH else 0.00
+            )
 
             avg_days_in_store = filtered_df["DaysInStore"].mean()
 
@@ -147,18 +142,14 @@ elif page == "See Report":
 
             grouped["Status"] = grouped["Stock Months"].apply(get_status)
 
-            # 🔢 Inventory Status Summary (Before adding total row)
-            filtered_status_df = grouped[
-                (pd.to_numeric(grouped["BeforeSell SOH"], errors='coerce') >= 50)
-            ]
-
-            status_counts = filtered_status_df["Status"].value_counts().to_dict()
+            # 🔢 Inventory Status Summary (Removed BeforeSell SOH >= 50 condition)
+            status_counts = grouped["Status"].value_counts().to_dict()
 
             danger_count = status_counts.get("Danger", 0)
             safe_count = status_counts.get("Safe", 0)
             overstocked_count = status_counts.get("OverStocked", 0)
 
-            st.markdown("### 📊 Inventory Status Summary (Min. 50 BeforeSell SOH)")
+            st.markdown("### 📊 Inventory Status Summary")
             col1, col2, col3 = st.columns(3)
             col1.metric("🔴 Danger", danger_count)
             col2.metric("🟡 Safe", safe_count)

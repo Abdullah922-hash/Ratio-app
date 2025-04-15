@@ -61,7 +61,7 @@ if page == "Upload CSV/Excel":
 
 # --------- Report Page ---------
 elif page == "See Report":
-    st.title("Report Viewer")
+    st.title("Report Viewer – Based on 90 Days of Stock")
 
     if not st.session_state.files_data:
         st.warning("Please upload at least one file on the 'Upload CSV/Excel' page.")
